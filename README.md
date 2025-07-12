@@ -627,32 +627,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 📞 **Contact & Support**
-
-<div align="center">
-  
-### 👥 **Team**
-**Anish** - Lead Developer & Founder  
-📧 Email: contact@agrilink.com  
-🌐 Website: [agrilink.com](https://agrilink.com)  
-📱 GitHub: [@Anish-2005](https://github.com/Anish-2005)
-
-### 💬 **Community**
-- **Discord**: [Join our community](https://discord.gg/agrilink)
-- **Twitter**: [@AgriLinkTech](https://twitter.com/AgriLinkTech)
-- **LinkedIn**: [AgriLink Company](https://linkedin.com/company/agrilink)
-
-### 🆘 **Support**
-- **Documentation**: [docs.agrilink.com](https://docs.agrilink.com)
-- **FAQ**: [agrilink.com/faq](https://agrilink.com/faq)
-- **Support Email**: support@agrilink.com
-
-</div>
-
----
-
-<div align="center">
-  
 ## 🌟 **Star History**
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Anish-2005/AgriLink&type=Date)](https://star-history.com/#Anish-2005/AgriLink&Date)
