@@ -98,41 +98,41 @@ AgriLink bridges the gap between agricultural waste and industrial demand throug
     </tr>
     <tr>
       <td>
-        • Next.js 15.2.3<br/>
-        • React 18<br/>
-        • Tailwind CSS 3.4.1<br/>
-        • Framer Motion<br/>
-        • Lucide React Icons
+        <img src="https://img.shields.io/badge/Next.js-000000?style=flat&logo=next.js&logoColor=white" alt="Next.js" height="20"/> Next.js 15.2.3<br/>
+        <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black" alt="React" height="20"/> React 18<br/>
+        <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" height="20"/> Tailwind CSS 3.4.1<br/>
+        <img src="https://img.shields.io/badge/Framer_Motion-0055FF?style=flat&logo=framer&logoColor=white" alt="Framer Motion" height="20"/> Framer Motion<br/>
+        <img src="https://img.shields.io/badge/Lucide-F56565?style=flat&logo=lucide&logoColor=white" alt="Lucide" height="20"/> Lucide React Icons
       </td>
       <td>
-        • Node.js<br/>
-        • Next.js API Routes<br/>
-        • RESTful APIs<br/>
-        • Server-side Rendering
+        <img src="https://img.shields.io/badge/Node.js-339933?style=flat&logo=node.js&logoColor=white" alt="Node.js" height="20"/> Node.js<br/>
+        <img src="https://img.shields.io/badge/Next.js-000000?style=flat&logo=next.js&logoColor=white" alt="Next.js API" height="20"/> Next.js API Routes<br/>
+        <img src="https://img.shields.io/badge/REST_API-FF6B35?style=flat&logo=postman&logoColor=white" alt="REST API" height="20"/> RESTful APIs<br/>
+        <img src="https://img.shields.io/badge/SSR-000000?style=flat&logo=next.js&logoColor=white" alt="SSR" height="20"/> Server-side Rendering
       </td>
       <td>
-        • MongoDB 6.17.0<br/>
-        • Mongoose ODM<br/>
-        • GridFS for file storage<br/>
-        • Optimized queries
+        <img src="https://img.shields.io/badge/MongoDB-47A248?style=flat&logo=mongodb&logoColor=white" alt="MongoDB" height="20"/> MongoDB 6.17.0<br/>
+        <img src="https://img.shields.io/badge/Mongoose-880000?style=flat&logo=mongoose&logoColor=white" alt="Mongoose" height="20"/> Mongoose ODM<br/>
+        <img src="https://img.shields.io/badge/GridFS-47A248?style=flat&logo=mongodb&logoColor=white" alt="GridFS" height="20"/> GridFS for file storage<br/>
+        <img src="https://img.shields.io/badge/Optimized-FF6B35?style=flat&logo=lightning&logoColor=white" alt="Optimized" height="20"/> Optimized queries
       </td>
       <td>
-        • Aptos Blockchain<br/>
-        • Smart Contracts<br/>
-        • Carbon Token (APT)<br/>
-        • Decentralized Storage
+        <img src="https://img.shields.io/badge/Aptos-00D4AA?style=flat&logo=aptos&logoColor=white" alt="Aptos" height="20"/> Aptos Blockchain<br/>
+        <img src="https://img.shields.io/badge/Smart_Contracts-363636?style=flat&logo=ethereum&logoColor=white" alt="Smart Contracts" height="20"/> Smart Contracts<br/>
+        <img src="https://img.shields.io/badge/Carbon_Token-00D4AA?style=flat&logo=aptos&logoColor=white" alt="Carbon Token" height="20"/> Carbon Token (APT)<br/>
+        <img src="https://img.shields.io/badge/Decentralized-FF6B35?style=flat&logo=ipfs&logoColor=white" alt="Decentralized" height="20"/> Decentralized Storage
       </td>
       <td>
-        • Google Gemini AI<br/>
-        • Computer Vision<br/>
-        • Natural Language Processing<br/>
-        • Predictive Analytics
+        <img src="https://img.shields.io/badge/Google_Gemini-4285F4?style=flat&logo=google&logoColor=white" alt="Google Gemini" height="20"/> Google Gemini AI<br/>
+        <img src="https://img.shields.io/badge/Computer_Vision-FF6B35?style=flat&logo=opencv&logoColor=white" alt="Computer Vision" height="20"/> Computer Vision<br/>
+        <img src="https://img.shields.io/badge/NLP-4285F4?style=flat&logo=tensorflow&logoColor=white" alt="NLP" height="20"/> Natural Language Processing<br/>
+        <img src="https://img.shields.io/badge/Analytics-FF6B35?style=flat&logo=tensorflow&logoColor=white" alt="Analytics" height="20"/> Predictive Analytics
       </td>
       <td>
-        • Civic Auth<br/>
-        • Session Management<br/>
-        • Secure API endpoints<br/>
-        • Role-based access
+        <img src="https://img.shields.io/badge/Civic_Auth-6B46C1?style=flat&logo=auth0&logoColor=white" alt="Civic Auth" height="20"/> Civic Auth<br/>
+        <img src="https://img.shields.io/badge/Sessions-FF6B35?style=flat&logo=json-web-tokens&logoColor=white" alt="Sessions" height="20"/> Session Management<br/>
+        <img src="https://img.shields.io/badge/Secure_API-4CAF50?style=flat&logo=shield&logoColor=white" alt="Secure API" height="20"/> Secure API endpoints<br/>
+        <img src="https://img.shields.io/badge/RBAC-2196F3?style=flat&logo=shield&logoColor=white" alt="RBAC" height="20"/> Role-based access
       </td>
     </tr>
   </table>
