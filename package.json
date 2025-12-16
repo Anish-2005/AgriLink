@@ -19,7 +19,7 @@
     "lucide-react": "^0.522.0",
     "mongodb": "^6.17.0",
     "net": "^1.0.2",
-    "next": "^15.2.3",
+    "next": "15.2.8",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.5.0",
