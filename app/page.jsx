@@ -1,9 +1,11 @@
 'use client'
 import { useEffect, useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import * as THREE from 'three';
 import { Leaf, Camera, DollarSign, Users, Shield, TrendingUp, CheckCircle, ArrowRight, Menu, X, Star, Zap, BarChart3, Globe } from 'lucide-react';
 
 export default function Home() {
+  const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
@@ -267,15 +269,7 @@ export default function Home() {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
-                  onClick={() => {
-                    if (!user) {
-                      setSigninBtnLoading(true);
-                      setTimeout(() => {
-                        setUser({ name: 'Demo User' });
-                        setSigninBtnLoading(false);
-                      }, 1000);
-                    }
-                  }}
+                  onClick={() => router.push('/app')}
                   className="group relative px-8 py-4 bg-emerald-600 text-white rounded-xl font-extrabold shadow-xl shadow-emerald-400/40 hover:shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300 border-2 border-emerald-500"
                 >
                   <span className="flex items-center justify-center space-x-2">
