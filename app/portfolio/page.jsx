@@ -80,7 +80,7 @@ export default function PortfolioPage() {
 
   useEffect(() => {
     fetchUserSales();
-  }, [user?.id]);
+  }, [user?.id, fetchUserSales]);
 
   // Filter and sort functionality
   useEffect(() => {
