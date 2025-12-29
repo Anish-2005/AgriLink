@@ -1,4 +1,5 @@
 {
+    "ignoreDeprecations": "6.0",
   "compilerOptions": {
     "target": "ES2017",
     "lib": [
@@ -16,9 +17,9 @@
         },
     "noEmit": true,
     "incremental": true,
-    "module": "esnext",
+    "module": "NodeNext",
     "esModuleInterop": true,
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",

@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useState } from 'react';
-import Head from 'next/head';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Link from 'next/link';
@@ -30,11 +29,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-100 to-green-50">
-      <Head>
-        <title>AgriLink | Smart Agricultural Waste Marketplace</title>
-        <meta name="description" content="Transform waste into profit with AI-powered agricultural waste marketplace" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
 
       {/* Animated Background Elements */}
       <div className="fixed inset-0 overflow-hidden -z-10">
