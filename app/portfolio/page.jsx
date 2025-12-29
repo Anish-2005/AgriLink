@@ -151,24 +151,66 @@ export default function PortfolioPage() {
     fetchUserSales();
   };
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 flex items-center justify-center">
-        <div className="bg-white p-8 rounded-xl shadow-lg max-w-md text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Please Log In</h2>
-          <p className="text-gray-600 mb-6">
-            You need to be logged in to view your portfolio.
-          </p>
-          <a
-            href="/login"
-            className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-          >
-            Go to Login
-          </a>
-        </div>
-      </div>
-    );
-  }
+  // Sample data for unauthenticated users
+  const sampleStats = {
+    totalSales: 120000,
+    totalWeight: 3500,
+    averagePrice: 34,
+    transactions: 12,
+  };
+  const sampleSales = [
+    {
+      id: 'sample1',
+      item: 'Rice Straw',
+      price: 32,
+      weight: 500,
+      quantityUnit: 'kg',
+      time: '2025-12-01T10:00:00Z',
+      status: 'completed',
+      imageUrl: null,
+      wasteDescription: 'Dry rice straw, baled',
+      moistureLevel: 'Low',
+      ageOfWaste: '2 days',
+      location: 'Punjab',
+      additionalNotes: 'Ready for pickup',
+    },
+    {
+      id: 'sample2',
+      item: 'Sugarcane Bagasse',
+      price: 36,
+      weight: 800,
+      quantityUnit: 'kg',
+      time: '2025-11-20T14:30:00Z',
+      status: 'pending',
+      imageUrl: null,
+      wasteDescription: 'Fresh bagasse from mill',
+      moistureLevel: 'Medium',
+      ageOfWaste: '1 day',
+      location: 'Maharashtra',
+      additionalNotes: '',
+    },
+    {
+      id: 'sample3',
+      item: 'Wheat Husk',
+      price: 34,
+      weight: 300,
+      quantityUnit: 'kg',
+      time: '2025-10-15T09:00:00Z',
+      status: 'completed',
+      imageUrl: null,
+      wasteDescription: 'Clean, dry husk',
+      moistureLevel: 'Low',
+      ageOfWaste: '3 days',
+      location: 'Haryana',
+      additionalNotes: 'Stored in shed',
+    },
+  ];
+
+  // Use sample data if not logged in, otherwise use real data
+  const isSample = !user;
+  const displayStats = isSample ? sampleStats : stats;
+  const displaySales = isSample ? sampleSales : filteredData;
+  const displaySalesData = isSample ? sampleSales : salesData;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100">
@@ -218,13 +260,13 @@ export default function PortfolioPage() {
                     <div className="bg-green-600 p-4 rounded-xl">
                       <FiDollarSign className="text-white text-2xl mb-2" />
                       <p className="text-sm text-green-200">Total Earnings</p>
-                      <p className="text-2xl font-bold">{formatCurrency(filteredData.filter(item => item.status === 'completed').reduce((sum, item) => sum + (item.price * item.weight), 0))}</p>
+                      <p className="text-2xl font-bold">{formatCurrency(displaySales.filter(item => item.status === 'completed').reduce((sum, item) => sum + (item.price * item.weight), 0))}</p>
                     </div>
                     <div className="bg-green-700 p-4 rounded-xl">
                       <FiTrendingUp className="text-white text-2xl mb-2" />
-                      <p className="text-sm text-green-200">Avg. Price/{filteredData[0]?.quantityUnit || 'kg'}</p>
+                      <p className="text-sm text-green-200">Avg. Price/{displaySales[0]?.quantityUnit || 'kg'}</p>
                       <p className="text-2xl font-bold">₹{(() => {
-                        const completed = filteredData.filter(item => item.status === 'completed');
+                        const completed = displaySales.filter(item => item.status === 'completed');
                         const totalSales = completed.reduce((sum, item) => sum + (item.price * item.weight), 0);
                         const totalWeight = completed.reduce((sum, item) => sum + item.weight, 0);
                         return Math.round(totalWeight > 0 ? totalSales / totalWeight : 0);
@@ -233,12 +275,12 @@ export default function PortfolioPage() {
                     <div className="bg-green-800 p-4 rounded-xl">
                       <FiPackage className="text-white text-2xl mb-2" />
                       <p className="text-sm text-green-200">Total Listed</p>
-                      <p className="text-2xl font-bold">{filteredData.filter(item => item.status === 'completed').reduce((sum, item) => sum + item.weight, 0)} {filteredData[0]?.quantityUnit || 'kg'}</p>
+                      <p className="text-2xl font-bold">{displaySales.filter(item => item.status === 'completed').reduce((sum, item) => sum + item.weight, 0)} {displaySales[0]?.quantityUnit || 'kg'}</p>
                     </div>
                     <div className="bg-green-900 p-4 rounded-xl">
                       <FiCalendar className="text-white text-2xl mb-2" />
                       <p className="text-sm text-green-200">Listings</p>
-                      <p className="text-2xl font-bold">{filteredData.filter(item => item.status === 'completed').length}</p>
+                      <p className="text-2xl font-bold">{displaySales.filter(item => item.status === 'completed').length}</p>
                     </div>
                   </div>
                 </div>
@@ -255,13 +297,13 @@ export default function PortfolioPage() {
           <div className="bg-green-600 text-white p-4 rounded-xl">
             <FiDollarSign className="text-2xl mb-2" />
             <p className="text-sm">Total Earnings</p>
-            <p className="text-lg font-bold">{formatCurrency(filteredData.filter(item => item.status === 'completed').reduce((sum, item) => sum + (item.price * item.weight), 0))}</p>
+            <p className="text-lg font-bold">{formatCurrency(displaySales.filter(item => item.status === 'completed').reduce((sum, item) => sum + (item.price * item.weight), 0))}</p>
           </div>
           <div className="bg-green-700 text-white p-4 rounded-xl">
             <FiTrendingUp className="text-2xl mb-2" />
-            <p className="text-sm">Avg. Price/{filteredData[0]?.quantityUnit || 'kg'}</p>
+            <p className="text-sm">Avg. Price/{displaySales[0]?.quantityUnit || 'kg'}</p>
             <p className="text-lg font-bold">₹{(() => {
-              const completed = filteredData.filter(item => item.status === 'completed');
+              const completed = displaySales.filter(item => item.status === 'completed');
               const totalSales = completed.reduce((sum, item) => sum + (item.price * item.weight), 0);
               const totalWeight = completed.reduce((sum, item) => sum + item.weight, 0);
               return Math.round(totalWeight > 0 ? totalSales / totalWeight : 0);
@@ -270,12 +312,12 @@ export default function PortfolioPage() {
           <div className="bg-green-800 text-white p-4 rounded-xl">
             <FiPackage className="text-2xl mb-2" />
             <p className="text-sm">Total Listed</p>
-            <p className="text-lg font-bold">{filteredData.filter(item => item.status === 'completed').reduce((sum, item) => sum + item.weight, 0)} {filteredData[0]?.quantityUnit || 'kg'}</p>
+            <p className="text-lg font-bold">{displaySales.filter(item => item.status === 'completed').reduce((sum, item) => sum + item.weight, 0)} {displaySales[0]?.quantityUnit || 'kg'}</p>
           </div>
           <div className="bg-green-900 text-white p-4 rounded-xl">
             <FiCalendar className="text-2xl mb-2" />
             <p className="text-sm">Listings</p>
-            <p className="text-lg font-bold">{filteredData.filter(item => item.status === 'completed').length}</p>
+            <p className="text-lg font-bold">{displaySales.filter(item => item.status === 'completed').length}</p>
           </div>
         </div>
 
@@ -341,51 +383,41 @@ export default function PortfolioPage() {
                   <th
                     scope="col"
                     className="px-6 py-4 text-left text-xs font-medium text-gray-700 uppercase tracking-wider cursor-pointer"
-                    onClick={() => requestSort('item')}
                   >
                     <div className="flex items-center">
                       Item
-                      {getSortIndicator('item')}
                     </div>
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-4 text-right text-xs font-medium text-gray-700 uppercase tracking-wider cursor-pointer"
-                    onClick={() => requestSort('price')}
                   >
                     <div className="flex items-center justify-end">
                       Price
-                      {getSortIndicator('price')}
                     </div>
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-4 text-right text-xs font-medium text-gray-700 uppercase tracking-wider cursor-pointer"
-                    onClick={() => requestSort('weight')}
                   >
                     <div className="flex items-center justify-end">
-                      Quantity ({salesData[0]?.quantityUnit || 'kg'})
-                      {getSortIndicator('weight')}
+                      Quantity ({displaySalesData[0]?.quantityUnit || 'kg'})
                     </div>
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-4 text-right text-xs font-medium text-gray-700 uppercase tracking-wider cursor-pointer"
-                    onClick={() => requestSort('time')}
                   >
                     <div className="flex items-center justify-end">
                       Date
-                      {getSortIndicator('time')}
                     </div>
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-4 text-right text-xs font-medium text-gray-700 uppercase tracking-wider cursor-pointer"
-                    onClick={() => requestSort('id')}
                   >
                     <div className="flex items-center justify-end">
                       Total
-                      {getSortIndicator('id')}
                     </div>
                   </th>
                   <th
@@ -397,16 +429,8 @@ export default function PortfolioPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {loading ? (
-                  <tr>
-                    <td colSpan="6" className="px-6 py-12 text-center">
-                      <div className="flex justify-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
-                      </div>
-                    </td>
-                  </tr>
-                ) : filteredData.length > 0 ? (
-                  filteredData.map((sale) => (
+                {displaySales.length > 0 ? (
+                  displaySales.map((sale) => (
                     <tr
                       key={sale.id}
                       className="hover:bg-green-50 transition-colors duration-200"
@@ -467,25 +491,25 @@ export default function PortfolioPage() {
           </div>
 
           {/* Table Summary */}
-          {!loading && filteredData.length > 0 && (
+          {displaySales.length > 0 && (
             <div className="bg-green-50 px-6 py-4 border-t border-gray-200">
               <div className="flex justify-between items-center">
                 <p className="text-sm text-gray-700">
-                  Showing <span className="font-medium">{filteredData.length}</span> of{' '}
-                  <span className="font-medium">{salesData.length}</span> listings
+                  Showing <span className="font-medium">{displaySales.length}</span> of{' '}
+                  <span className="font-medium">{displaySalesData.length}</span> listings
                 </p>
                 <div className="flex space-x-6">
                   <div className="text-right">
                     <p className="text-xs text-gray-500">Total Quantity</p>
                     <p className="font-medium">
-                      {filteredData.reduce((sum, item) => sum + item.weight, 0)} {salesData[0]?.quantityUnit || 'kg'}
+                      {displaySales.reduce((sum, item) => sum + item.weight, 0)} {displaySalesData[0]?.quantityUnit || 'kg'}
                     </p>
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-gray-500">Total Value</p>
                     <p className="font-medium text-green-600">
                       {formatCurrency(
-                        filteredData.reduce((sum, item) => sum + (item.price * item.weight), 0)
+                        displaySales.reduce((sum, item) => sum + (item.price * item.weight), 0)
                       )}
                     </p>
                   </div>
@@ -526,19 +550,19 @@ export default function PortfolioPage() {
               <p className="text-xs text-gray-500">Rice Straw</p>
             </div>
             <div className="bg-green-50 p-4 rounded-lg">
-              <p className="text-sm text-gray-500">Avg. Price/{salesData[0]?.quantityUnit || 'kg'}</p>
-              <p className="text-lg font-bold">₹{Math.round(stats.averagePrice)}</p>
+              <p className="text-sm text-gray-500">Avg. Price/{displaySalesData[0]?.quantityUnit || 'kg'}</p>
+              <p className="text-lg font-bold">₹{Math.round(displayStats.averagePrice)}</p>
               <p className="text-xs text-gray-500">Based on completed listings</p>
             </div>
             <div className="bg-green-50 p-4 rounded-lg">
               <p className="text-sm text-gray-500">Top Item</p>
-              <p className="text-lg font-bold">{salesData[0]?.item || 'Rice Straw'}</p>
-              <p className="text-xs text-gray-500">{stats.totalWeight} {salesData[0]?.quantityUnit || 'kg'} listed</p>
+              <p className="text-lg font-bold">{displaySalesData[0]?.item || 'Rice Straw'}</p>
+              <p className="text-xs text-gray-500">{displayStats.totalWeight} {displaySalesData[0]?.quantityUnit || 'kg'} listed</p>
             </div>
             <div className="bg-green-50 p-4 rounded-lg">
               <p className="text-sm text-gray-500">Recent Listing</p>
-              <p className="text-lg font-bold">{formatCurrency(salesData[0]?.price * salesData[0]?.weight || 0)}</p>
-              <p className="text-xs text-gray-500">{salesData[0]?.item || 'Wheat Straw'}</p>
+              <p className="text-lg font-bold">{formatCurrency(displaySalesData[0]?.price * displaySalesData[0]?.weight || 0)}</p>
+              <p className="text-xs text-gray-500">{displaySalesData[0]?.item || 'Wheat Straw'}</p>
             </div>
           </div>
         </div>
