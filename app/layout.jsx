@@ -13,6 +13,7 @@ export const metadata = {
 };
 
 import { ReactNode } from "react";
+import ScrollToTopButton from "./components/ScrollToTopButton";
 
 export default function RootLayout({ children }) {
   return (
@@ -23,6 +24,7 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <CivicAuthProvider>
           {children}
+          <ScrollToTopButton />
         </CivicAuthProvider>
       </body>
     </html>
