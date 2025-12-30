@@ -211,7 +211,7 @@ export default function MarketplacePage() {
 
               <h1 className="text-5xl lg:text-6xl font-extrabold leading-tight text-emerald-800 drop-shadow-xl">
                 Premium Market for
-                <span className="block bg-gradient-to-r from-emerald-600 via-lime-500 to-emerald-400 bg-clip-text text-transparent drop-shadow-lg">
+                <span className="py-2 block bg-gradient-to-r from-emerald-600 via-lime-500 to-emerald-400 bg-clip-text text-transparent drop-shadow-lg">
                   Agricultural Waste
                 </span>
               </h1>
@@ -276,8 +276,9 @@ export default function MarketplacePage() {
                 </div>
 
                 <div className="mt-6 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4">
-                  <p className="text-sm text-amber-800 font-semibold">
-                    💡 Pro Tip: Prices updated daily based on demand and quality
+                  <p className="text-sm text-amber-800 font-semibold flex items-center">
+                    <Zap className="h-4 w-4 text-amber-800 mr-2" />
+                    Pro Tip: Prices updated daily based on demand and quality
                   </p>
                 </div>
               </div>
@@ -631,17 +632,7 @@ export default function MarketplacePage() {
         </div>
       </footer>
 
-      {/* Scroll to top button */}
-      <button
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className={`fixed bottom-8 right-8 p-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ${
-          isScrolled ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
-        }`}
-      >
-        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-        </svg>
-      </button>
+      {/* Scroll button removed (use global ScrollToTopButton in layout) */}
 
       <style jsx global>{`
         @keyframes blob {
