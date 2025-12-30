@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import { getWasteListingsByUser } from '../actions/mongodbfunctions';
 import { useUser } from '@civic/auth/react';
-import { ArrowRight, Leaf, Zap, Star, TrendingUp, Users, Globe, CheckCircle, Shield, Tree, Cloud, Droplets, Wind } from 'lucide-react';
+import { ArrowRight, Leaf, Zap, Star, TrendingUp, Users, Globe, CheckCircle, Shield, Cloud, Droplets, Wind } from 'lucide-react';
 import * as THREE from 'three';
 import Footer from '../components/Footer';
 
@@ -147,7 +147,7 @@ export default function CO2WalletPage() {
   };
 
   const impactMetrics = [
-    { icon: Tree, label: 'Trees Planted', value: walletData?.equivalentTrees || 0, color: 'from-emerald-500 to-lime-500' },
+    { icon: Leaf, label: 'Trees Planted', value: walletData?.equivalentTrees || 0, color: 'from-emerald-500 to-lime-500' },
     { icon: Cloud, label: 'Cars Off Road', value: walletData?.carsOffRoad || 0, color: 'from-blue-500 to-indigo-500' },
     { icon: Wind, label: 'Household Energy', value: `${walletData?.householdEnergy || 0} months`, color: 'from-violet-500 to-purple-500' },
     { icon: Droplets, label: 'Water Saved', value: `${(walletData?.waterSaved || 0).toLocaleString()} L`, color: 'from-teal-500 to-cyan-500' }
