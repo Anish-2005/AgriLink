@@ -28,6 +28,8 @@ export default function PortfolioPage() {
 
   // Three.js animated background setup
   const threeCanvasRef = useRef(null);
+  const wrapperRef = useRef(null);
+  const reportRef = useRef(null);
   useEffect(() => {
     let renderer, scene, camera, animationId;
     if (!threeCanvasRef.current) return;
@@ -198,6 +200,60 @@ export default function PortfolioPage() {
     fetchUserSales();
   };
 
+  const handleDownloadReport = async () => {
+    try {
+      const html2canvasMod = await import('html2canvas');
+      const jspdfMod = await import('jspdf');
+      const html2canvas = html2canvasMod.default || html2canvasMod;
+      const jsPDFConstructor = jspdfMod.jsPDF || jspdfMod.default || jspdfMod;
+
+      const element = reportRef.current || wrapperRef.current || document.body;
+      // Ensure the report element is visible to html2canvas (we render it off-screen but visible)
+      const canvas = await html2canvas(element, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+      const imgData = canvas.toDataURL('image/png');
+
+      const pdf = new jsPDFConstructor('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const margin = 10;
+
+      const imgProps = pdf.getImageProperties ? pdf.getImageProperties(imgData) : { width: canvas.width, height: canvas.height };
+      const imgWidthMm = pdfWidth - margin * 2;
+      const imgHeightMm = (imgProps.height * imgWidthMm) / imgProps.width;
+
+      if (imgHeightMm < pdfHeight - margin * 2) {
+        pdf.addImage(imgData, 'PNG', margin, margin, imgWidthMm, imgHeightMm);
+      } else {
+        // Split into pages
+        const pageHeightPx = Math.floor((imgProps.width * (pdfHeight - margin * 2)) / imgWidthMm);
+        const canvasHeight = canvas.height;
+        const pageCanvas = document.createElement('canvas');
+        const pageCtx = pageCanvas.getContext('2d');
+
+        let y = 0;
+        let first = true;
+        while (y < canvasHeight) {
+          const h = Math.min(pageHeightPx, canvasHeight - y);
+          pageCanvas.width = canvas.width;
+          pageCanvas.height = h;
+          pageCtx.fillStyle = '#fff';
+          pageCtx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+          pageCtx.drawImage(canvas, 0, y, canvas.width, h, 0, 0, pageCanvas.width, pageCanvas.height);
+          const pageData = pageCanvas.toDataURL('image/png');
+          if (!first) pdf.addPage();
+          pdf.addImage(pageData, 'PNG', margin, margin, imgWidthMm, (h * imgWidthMm) / canvas.width);
+          y += h;
+          first = false;
+        }
+      }
+
+      pdf.save(`AgriLink-Portfolio-${new Date().toISOString().slice(0,10)}.pdf`);
+    } catch (err) {
+      console.error('PDF generation error', err);
+      alert('Failed to generate PDF. See console for details.');
+    }
+  };
+
   // Sample data for unauthenticated users
   const sampleStats = {
     totalSales: 120000,
@@ -291,7 +347,7 @@ export default function PortfolioPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-white relative overflow-hidden">
+    <div ref={wrapperRef} className="min-h-screen bg-white relative overflow-hidden">
       {/* Three.js Canvas Background */}
       <canvas ref={threeCanvasRef} className="fixed inset-0 w-full h-full z-0 pointer-events-none" style={{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',zIndex:0}} />
 
@@ -315,7 +371,7 @@ export default function PortfolioPage() {
 
               <h1 className="text-5xl lg:text-6xl font-extrabold leading-tight text-emerald-800 drop-shadow-xl">
                 Your Waste
-                <span className="block bg-gradient-to-r from-emerald-600 via-lime-500 to-emerald-400 bg-clip-text text-transparent drop-shadow-lg">
+                <span className="py-2 block bg-gradient-to-r from-emerald-600 via-lime-500 to-emerald-400 bg-clip-text text-transparent drop-shadow-lg">
                   Trading Portfolio
                 </span>
               </h1>
@@ -325,7 +381,7 @@ export default function PortfolioPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <button className="group relative px-8 py-4 bg-emerald-600 text-white rounded-xl font-extrabold shadow-xl shadow-emerald-400/40 hover:shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300 border-2 border-emerald-500 hover:scale-105">
+                <button onClick={handleDownloadReport} className="group relative px-8 py-4 bg-emerald-600 text-white rounded-xl font-extrabold shadow-xl shadow-emerald-400/40 hover:shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300 border-2 border-emerald-500 hover:scale-105">
                   <span className="flex items-center justify-center space-x-2">
                     <Download className="h-5 w-5" />
                     <span>Download Report</span>
@@ -699,6 +755,83 @@ export default function PortfolioPage() {
 
       {/* Footer */}
       <Footer />
+
+      {/* Off-screen A4 report container used for PDF generation (kept visible but off-screen) */}
+      <div
+        ref={reportRef}
+        style={{
+          position: 'fixed',
+          left: '-10000px',
+          top: 0,
+          width: '794px', /* A4 width at ~96dpi */
+          background: '#ffffff',
+          color: '#064e3b',
+          padding: '28px',
+          boxSizing: 'border-box',
+          fontFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial',
+          lineHeight: 1.3,
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <div>
+            <h1 style={{ margin: 0, color: '#065f46', fontSize: 22, fontWeight: 800 }}>AgriLink — Portfolio Report</h1>
+            <div style={{ marginTop: 6, color: '#065f46', fontWeight: 700 }}>{user?.name || user?.email || 'Farmer'}</div>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: 12, color: '#065f46', fontWeight: 700 }}>{new Date().toLocaleDateString()}</div>
+            <div style={{ fontSize: 11, color: '#065f46' }}>Generated by AgriLink</div>
+          </div>
+        </div>
+
+        <hr style={{ border: 'none', borderTop: '2px solid #d1fae5', margin: '8px 0 18px' }} />
+
+        <div style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
+          <div style={{ flex: 1, padding: 12, background: '#ecfdf5', borderRadius: 8, border: '1px solid #bbf7d0' }}>
+            <div style={{ fontSize: 12, color: '#065f46', fontWeight: 800 }}>Total Value</div>
+            <div style={{ fontSize: 18, fontWeight: 900 }}>{formatCurrency(displaySales.reduce((sum, item) => sum + (item.price * item.weight), 0))}</div>
+          </div>
+          <div style={{ flex: 1, padding: 12, background: '#fff7ed', borderRadius: 8, border: '1px solid #ffedd5' }}>
+            <div style={{ fontSize: 12, color: '#92400e', fontWeight: 800 }}>Total Quantity</div>
+            <div style={{ fontSize: 18, fontWeight: 900 }}>{displaySales.reduce((sum, item) => sum + item.weight, 0)} {displaySales[0]?.quantityUnit || 'kg'}</div>
+          </div>
+          <div style={{ flex: 1, padding: 12, background: '#eef2ff', borderRadius: 8, border: '1px solid #e0e7ff' }}>
+            <div style={{ fontSize: 12, color: '#3730a3', fontWeight: 800 }}>Transactions</div>
+            <div style={{ fontSize: 18, fontWeight: 900 }}>{displaySales.length}</div>
+          </div>
+        </div>
+
+        <div style={{ marginTop: 6 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
+            <thead>
+              <tr>
+                <th style={{ textAlign: 'left', padding: '8px 6px', borderBottom: '2px solid #e6f9ef', color: '#065f46' }}>Item</th>
+                <th style={{ textAlign: 'right', padding: '8px 6px', borderBottom: '2px solid #e6f9ef', color: '#065f46' }}>Price/kg</th>
+                <th style={{ textAlign: 'right', padding: '8px 6px', borderBottom: '2px solid #e6f9ef', color: '#065f46' }}>Quantity</th>
+                <th style={{ textAlign: 'right', padding: '8px 6px', borderBottom: '2px solid #e6f9ef', color: '#065f46' }}>Date</th>
+                <th style={{ textAlign: 'right', padding: '8px 6px', borderBottom: '2px solid #e6f9ef', color: '#065f46' }}>Total</th>
+                <th style={{ textAlign: 'right', padding: '8px 6px', borderBottom: '2px solid #e6f9ef', color: '#065f46' }}>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {displaySales.map((sale, idx) => (
+                <tr key={sale.id} style={{ background: idx % 2 === 0 ? 'transparent' : '#f8fffb' }}>
+                  <td style={{ padding: '10px 6px', verticalAlign: 'top', color: '#065f46', fontWeight: 700 }}>{sale.item}</td>
+                  <td style={{ padding: '10px 6px', verticalAlign: 'top', textAlign: 'right', color: '#065f46' }}>₹{sale.price}</td>
+                  <td style={{ padding: '10px 6px', verticalAlign: 'top', textAlign: 'right', color: '#065f46' }}>{sale.weight} {sale.quantityUnit}</td>
+                  <td style={{ padding: '10px 6px', verticalAlign: 'top', textAlign: 'right', color: '#065f46' }}>{formatDate(sale.time)}</td>
+                  <td style={{ padding: '10px 6px', verticalAlign: 'top', textAlign: 'right', color: '#065f46', fontWeight: 800 }}>{formatCurrency(sale.price * sale.weight)}</td>
+                  <td style={{ padding: '10px 6px', verticalAlign: 'top', textAlign: 'right' }}>{sale.status === 'completed' ? 'Completed' : 'Pending'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div style={{ marginTop: 22, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ fontSize: 11, color: '#6b7280' }}>AgriLink • Professional Report</div>
+          <div style={{ fontSize: 11, color: '#6b7280' }}>Page 1</div>
+        </div>
+      </div>
 
       {/* Scroll to top button */}
       <button
