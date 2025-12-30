@@ -1,22 +1,22 @@
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
+import { BarChart3, CheckCircle, Globe } from 'lucide-react';
 
 export default function TokenInfo() {
   const items = [
     {
-      icon: '1:1',
+      icon: <BarChart3 className="h-8 w-8 text-white" />,
       title: 'Simple Ratio',
       desc: 'Every 1 ton (1000 kg) of CO₂ saved equals 1 Carbon Token',
       color: 'from-emerald-500 to-teal-500'
     },
     {
-      icon: '✓',
+      icon: <CheckCircle className="h-8 w-8 text-white" />,
       title: 'Verified Credits',
       desc: 'All CO₂ savings are independently verified and converted to tradeable carbon tokens',
       color: 'from-blue-500 to-indigo-500'
     },
     {
-      icon: '🌍',
+      icon: <Globe className="h-8 w-8 text-white" />,
       title: 'Real Impact',
       desc: 'Your tokens represent genuine environmental impact and sustainable farming practices',
       color: 'from-violet-500 to-purple-500'
@@ -30,7 +30,7 @@ export default function TokenInfo() {
         {items.map((item, idx) => (
           <div key={idx} className="text-center" data-aos="fade-up" data-aos-delay={idx * 200}>
             <div className={`inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br ${item.color} mb-6`}>
-              <span className="text-3xl font-extrabold text-white">{item.icon}</span>
+              {item.icon}
             </div>
             <h3 className="text-xl font-extrabold text-emerald-800 mb-3">{item.title}</h3>
             <p className="text-emerald-900 leading-relaxed font-semibold">{item.desc}</p>

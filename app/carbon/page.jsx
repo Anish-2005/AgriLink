@@ -1,13 +1,20 @@
-'use client';
-import { useState, useEffect, useRef } from 'react';
-import { FiCloud, FiTarget, FiCreditCard, FiActivity, FiRefreshCw, FiZap, FiBarChart2 } from 'react-icons/fi';
-import { motion } from 'framer-motion';
-import Navbar from '../components/Navbar';
-import { getWasteListingsByUser } from '../actions/mongodbfunctions';
-import { useUser } from '@civic/auth/react';
-import { ArrowRight, Leaf, Zap, Star, TrendingUp, Users, Globe, CheckCircle, Shield, Cloud, Droplets, Wind } from 'lucide-react';
-import * as THREE from 'three';
-import Footer from '../components/Footer';
+ 'use client';
+ import { useState, useEffect, useRef } from 'react';
+ import { FiCloud, FiActivity, FiRefreshCw, FiZap, FiBarChart2 } from 'react-icons/fi';
+ import Navbar from '../components/Navbar';
+ import { getWasteListingsByUser } from '../actions/mongodbfunctions';
+ import { useUser } from '@civic/auth/react';
+ import { ArrowRight, Leaf, Zap, Star, TrendingUp, Users, Globe, CheckCircle, Shield, Cloud, Droplets, Wind } from 'lucide-react';
+ import * as THREE from 'three';
+ import Footer from '../components/Footer';
+
+import Hero from './components/Hero';
+import ImpactCard from './components/ImpactCard';
+import ImpactStats from './components/ImpactStats';
+import TokenInfo from './components/TokenInfo';
+import Transactions from './components/Transactions';
+import ImpactVisualization from './components/ImpactVisualization';
+import CTA from './components/CTA';
 
 export default function CO2WalletPage() {
   const { user } = useUser();
@@ -170,304 +177,24 @@ export default function CO2WalletPage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <div className="inline-flex items-center space-x-2 px-4 py-2 bg-white border-2 border-emerald-500 rounded-full shadow-md">
-                <Leaf className="h-4 w-4 text-emerald-600" />
-                <span className="text-base font-extrabold text-emerald-700">Carbon Credit Wallet</span>
-              </div>
-
-              <h1 className="text-5xl lg:text-6xl font-extrabold leading-tight text-emerald-800 drop-shadow-xl">
-                Your Sustainable
-                <span className="block bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-400 bg-clip-text text-transparent drop-shadow-lg">
-                  Impact Portfolio
-                </span>
-              </h1>
-
-              <p className="text-xl text-emerald-900 leading-relaxed drop-shadow-md font-semibold">
-                Track and manage your verified CO₂ credits earned through sustainable farming practices. 
-                <span className="block mt-2 text-lg font-extrabold text-emerald-700">1 ton CO₂ saved = 1 Carbon Token</span>
-              </p>
-
-              {!loading && walletData && (
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-gradient-to-br from-emerald-500 to-lime-400 text-white rounded-2xl p-6 shadow-lg border-2 border-emerald-600">
-                    <div className="flex items-center space-x-3">
-                      <FiTarget className="h-6 w-6" />
-                      <div>
-                        <p className="text-sm font-bold opacity-90">CO₂ Saved</p>
-                        <p className="text-2xl font-extrabold">{walletData.totalCO2.toLocaleString()} kg</p>
-                        <p className="text-xs opacity-80 mt-1">{walletData.equivalent}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-gradient-to-br from-teal-500 to-emerald-400 text-white rounded-2xl p-6 shadow-lg border-2 border-emerald-600">
-                    <div className="flex items-center space-x-3">
-                      <FiCreditCard className="h-6 w-6" />
-                      <div>
-                        <p className="text-sm font-bold opacity-90">Carbon Tokens</p>
-                        <p className="text-2xl font-extrabold">{walletData.totalTokens}</p>
-                        <p className="text-xs opacity-80 mt-1">Verified Credits</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Impact Card */}
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-white to-teal-100 rounded-3xl blur-2xl opacity-40 border-4 border-emerald-500"></div>
-              <div className="relative bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-500 rounded-3xl p-8 shadow-2xl">
-                <div className="flex items-center space-x-3 mb-6">
-                  <div className="bg-gradient-to-r from-emerald-500 to-teal-400 p-3 rounded-xl">
-                    <Shield className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-emerald-700 font-bold uppercase tracking-wide">Your Impact Level</p>
-                    <p className="text-2xl font-extrabold text-emerald-800">{walletData?.level}</p>
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="font-extrabold text-emerald-800">Progress</span>
-                    <span className="font-extrabold text-emerald-800">{walletData?.progress}%</span>
-                  </div>
-                  <div className="w-full bg-emerald-100 border-2 border-emerald-300 rounded-full h-4">
-                    <motion.div
-                      className="bg-gradient-to-r from-emerald-500 to-teal-400 h-3 rounded-full"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${walletData?.progress}%` }}
-                      transition={{ duration: 1, ease: "easeOut" }}
-                    />
-                  </div>
-                  <div className="text-right text-sm mt-2 text-emerald-700 font-semibold">
-                    Next: {walletData?.nextLevel} ({walletData?.nextLevelTokens > 0 ? `+${walletData.nextLevelTokens}` : walletData?.nextLevelTokens} tokens)
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-200 rounded-2xl p-4">
-                  <p className="text-sm text-emerald-800 font-bold mb-2">🌱 Your Environmental Impact</p>
-                  <p className="text-emerald-900 font-semibold">{walletData?.impact}</p>
-                  <div className="mt-3 grid grid-cols-2 gap-2">
-                    <div className="text-center">
-                      <div className="text-lg font-extrabold text-emerald-800">{walletData?.lastMonthCO2 || 0}</div>
-                      <div className="text-xs text-emerald-700">Last month CO₂</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-lg font-extrabold text-emerald-800">+{walletData?.lastMonthTokens || 0}</div>
-                      <div className="text-xs text-emerald-700">Tokens earned</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Hero walletData={walletData} loading={loading} user={user} />
+            <ImpactCard walletData={walletData} />
           </div>
         </div>
       </section>
 
-      {/* Impact Stats */}
-      <section className="py-12 bg-gradient-to-r from-emerald-600 to-teal-500 border-y-4 border-emerald-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {impactMetrics.map((metric, idx) => (
-              <div key={idx} className="text-center text-white group cursor-pointer" data-aos="fade-up" data-aos-delay={idx * 100}>
-                <div className={`inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm border-2 border-white/30 rounded-2xl mb-4 group-hover:scale-110 transition-transform shadow-lg`}>
-                </div>
-                <div className="text-3xl md:text-4xl font-extrabold drop-shadow-lg mb-2">{metric.value}</div>
-                <div className="text-sm font-bold uppercase tracking-wide opacity-90">{metric.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <ImpactStats impactMetrics={impactMetrics} />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Token System Info */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8 mb-12 border-2 border-emerald-500">
-          <h2 className="text-3xl font-extrabold text-emerald-800 mb-8 text-center drop-shadow-lg">
-            Carbon Token System
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { 
-                icon: '1:1', 
-                title: 'Simple Ratio', 
-                desc: 'Every 1 ton (1000 kg) of CO₂ saved equals 1 Carbon Token',
-                color: 'from-emerald-500 to-teal-500'
-              },
-              { 
-                icon: '✓', 
-                title: 'Verified Credits', 
-                desc: 'All CO₂ savings are independently verified and converted to tradeable carbon tokens',
-                color: 'from-blue-500 to-indigo-500'
-              },
-              { 
-                icon: '🌍', 
-                title: 'Real Impact', 
-                desc: 'Your tokens represent genuine environmental impact and sustainable farming practices',
-                color: 'from-violet-500 to-purple-500'
-              }
-            ].map((item, idx) => (
-              <div key={idx} className="text-center" data-aos="fade-up" data-aos-delay={idx * 200}>
-                <div className={`inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br ${item.color} mb-6`}>
-                  <span className="text-3xl font-extrabold text-white">{item.icon}</span>
-                </div>
-                <h3 className="text-xl font-extrabold text-emerald-800 mb-3">{item.title}</h3>
-                <p className="text-emerald-900 leading-relaxed font-semibold">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <TokenInfo />
 
-        {/* CO₂ Transactions */}
-        <div className="mb-12">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h2 className="text-3xl font-extrabold text-emerald-800 drop-shadow-lg">CO₂ Saving Actions</h2>
-              <p className="text-emerald-900 font-semibold mt-2">Track your sustainable actions and carbon token earnings</p>
-            </div>
-            <div className="text-sm text-emerald-700 font-bold bg-emerald-100 px-4 py-2 rounded-xl border-2 border-emerald-300">
-              Total: {transactions.length} Actions
-            </div>
-          </div>
+        <Transactions loading={loading} transactions={transactions} formatDate={formatDate} getActionIcon={getActionIcon} />
 
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-emerald-500">
-            {loading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-emerald-500"></div>
-              </div>
-            ) : transactions.length > 0 ? (
-              <div className="divide-y divide-emerald-100">
-                {transactions.map((tx) => (
-                  <div key={tx.id} className="p-6 hover:bg-emerald-50 transition-colors duration-300">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className="bg-gradient-to-br from-emerald-100 to-teal-100 border-2 border-emerald-300 rounded-xl p-3">
-                          {getActionIcon(tx.type)}
-                        </div>
-                        <div>
-                          <h4 className="text-lg font-extrabold text-emerald-800">{tx.action}</h4>
-                          <p className="text-emerald-700 font-semibold capitalize">{tx.type.replace('_', ' ')}</p>
-                          <p className="text-sm text-emerald-600 mt-1">{formatDate(tx.date)}</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center space-x-8">
-                        <div className="text-right">
-                          <p className="text-sm font-bold text-emerald-700">CO₂ Saved</p>
-                          <p className="text-xl font-extrabold text-emerald-800">{tx.co2} kg</p>
-                        </div>
-                        
-                        <div className="text-right">
-                          <p className="text-sm font-bold text-emerald-700">Tokens Earned</p>
-                          <p className="text-xl font-extrabold text-green-600">+{tx.tokens}</p>
-                        </div>
-                        
-                        <div>
-                          {tx.status === 'completed' ? (
-                            <span className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-lime-400 text-white text-sm font-extrabold rounded-full shadow-md">
-                              Verified
-                            </span>
-                          ) : (
-                            <span className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-400 text-white text-sm font-extrabold rounded-full shadow-md">
-                              Pending
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center p-12">
-                <div className="mx-auto h-20 w-20 flex items-center justify-center rounded-full bg-gradient-to-r from-emerald-100 to-teal-100 border-2 border-emerald-300 mb-6">
-                  <FiTarget className="h-10 w-10 text-emerald-600" />
-                </div>
-                <h3 className="text-2xl font-extrabold text-emerald-800 mb-4">No CO₂ actions yet</h3>
-                <p className="text-emerald-700 font-semibold mb-8">Your sustainable actions will appear here once you start selling waste</p>
-                <button className="group relative px-8 py-3 bg-emerald-600 text-white rounded-xl font-extrabold shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-emerald-500">
-                  <span className="flex items-center space-x-2">
-                    <span>Start Selling Waste</span>
-                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Impact Visualization */}
-        <div className="bg-white rounded-3xl shadow-2xl p-8 border-2 border-emerald-500">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-extrabold text-emerald-800 drop-shadow-lg">Environmental Impact Progress</h2>
-            <div className="text-sm text-emerald-700 font-bold bg-emerald-100 px-4 py-2 rounded-xl border-2 border-emerald-300">
-              Last 6 Months
-            </div>
-          </div>
-
-          <div className="h-64 flex items-end justify-center space-x-4 pb-8">
-            {[0.8, 1.2, 1.8, 2.1, 2.4, 3.2].map((tokens, index) => (
-              <div key={index} className="relative flex flex-col items-center w-16" data-aos="fade-up" data-aos-delay={index * 100}>
-                <motion.div
-                  className="w-full bg-gradient-to-t from-emerald-500 to-teal-400 rounded-t-2xl relative"
-                  initial={{ height: 0 }}
-                  animate={{ height: `${tokens * 60}px` }}
-                  transition={{ duration: 1, delay: index * 0.1 }}
-                >
-                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-sm font-extrabold text-emerald-800">
-                    {tokens}
-                  </div>
-                </motion.div>
-                <div className="mt-3 text-sm font-bold text-emerald-700">
-                  {['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][index]}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-12">
-            {[
-              { label: 'Verified by', value: 'UN SDG Standards', color: 'from-emerald-500 to-teal-500' },
-              { label: 'Carbon Audit', value: 'Quarterly Reports', color: 'from-blue-500 to-indigo-500' },
-              { label: 'Token Liquidity', value: '₹850/Ton Market', color: 'from-violet-500 to-purple-500' },
-              { label: 'Farmer Satisfaction', value: '98% Positive', color: 'from-amber-500 to-orange-500' }
-            ].map((item, idx) => (
-              <div key={idx} className="bg-gradient-to-br from-emerald-50 to-white border-2 border-emerald-300 rounded-2xl p-6">
-                <p className="text-sm font-bold text-emerald-700 mb-2">{item.label}</p>
-                <p className="text-xl font-extrabold text-emerald-800">{item.value}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <ImpactVisualization />
       </main>
 
-      {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-b from-white to-emerald-50 border-y-4 border-emerald-500">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-emerald-800 mb-6">
-            Ready to Grow Your Carbon Portfolio?
-          </h2>
-          <p className="text-xl text-emerald-900 mb-10 font-semibold">
-            Join thousands of farmers already earning premium prices and carbon credits for their waste.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="group relative px-8 py-4 bg-emerald-600 text-white rounded-xl font-extrabold shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-emerald-500 hover:scale-105">
-              <span className="flex items-center justify-center space-x-2">
-                <span>Sell Waste & Earn Tokens</span>
-                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </span>
-            </button>
-            <button className="px-8 py-4 border-2 border-emerald-500 text-emerald-700 rounded-xl font-extrabold hover:bg-emerald-600 hover:text-white transition-all duration-300">
-              View Token Marketplace
-            </button>
-          </div>
-        </div>
-      </section>
+      <CTA />
 
       {/* Footer */}
       <Footer />

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield } from 'lucide-react';
+import { Shield, Leaf } from 'lucide-react';
 
 export default function ImpactCard({ walletData }) {
   return (
@@ -36,7 +36,7 @@ export default function ImpactCard({ walletData }) {
         </div>
 
         <div className="bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-200 rounded-2xl p-4">
-          <p className="text-sm text-emerald-800 font-bold mb-2">🌱 Your Environmental Impact</p>
+          <p className="text-sm text-emerald-800 font-bold mb-2"><Leaf className="inline h-4 w-4 mr-2 text-emerald-600" />Your Environmental Impact</p>
           <p className="text-emerald-900 font-semibold">{walletData?.impact}</p>
           <div className="mt-3 grid grid-cols-2 gap-2">
             <div className="text-center">
