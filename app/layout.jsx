@@ -14,9 +14,12 @@ export const metadata = {
 
 import { ReactNode } from "react";
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <script src="https://js.puter.com/v2/" />
+      </head>
       <body className={inter.className}>
         <CivicAuthProvider>
           {children}

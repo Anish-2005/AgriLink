@@ -80,7 +80,7 @@ export default function Navbar() {
                                     <Leaf className="h-6 w-6 text-white" />
                                 </div>
                             </div>
-                            <span className="text-3xl font-extrabold text-emerald-700 tracking-tight drop-shadow-lg border-b-4 border-emerald-500 pb-1">
+                            <span className="text-3xl font-extrabold text-emerald-700 tracking-tight drop-shadow-lg">
                                 AgriLink
                             </span>
                         </Link>
@@ -114,61 +114,18 @@ export default function Navbar() {
                     <div className="flex items-center space-x-6">
                         {/* User Info */}
                         {user ? (
-                            <div className="hidden md:flex items-center space-x-4">
-                                <div className="text-right">
-                                    <p className="text-sm font-extrabold text-emerald-800">
-                                        {user?.name || user?.email?.split('@')[0] || 'Farmer'}
-                                    </p>
-                                    <p className="text-xs text-emerald-600 font-semibold">
-                                        Premium Member
-                                    </p>
-                                </div>
-                                
-                                {/* User Avatar */}
-                                <div className="relative group">
-                                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-lime-400 rounded-full blur opacity-75 group-hover:opacity-100 transition-opacity"></div>
-                                    <div className="relative h-10 w-10 rounded-full bg-gradient-to-r from-emerald-500 to-lime-500 flex items-center justify-center text-white font-extrabold border-2 border-emerald-600 shadow-lg">
-                                        {user?.name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'F'}
-                                    </div>
-                                    
-                                    {/* Dropdown */}
-                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl border-2 border-emerald-500 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300">
-                                        <div className="py-2">
-                                            <div className="px-4 py-3 border-b border-emerald-100">
-                                                <p className="text-sm font-extrabold text-emerald-800 truncate">{user?.email}</p>
-                                            </div>
-                                            <Link
-                                                href="/profile"
-                                                className="flex items-center px-4 py-3 text-sm text-emerald-700 hover:bg-emerald-50 font-semibold"
-                                            >
-                                                <User className="h-4 w-4 mr-2" /> Profile Settings
-                                            </Link>
-                                            <Link
-                                                href="/dashboard"
-                                                className="flex items-center px-4 py-3 text-sm text-emerald-700 hover:bg-emerald-50 font-semibold"
-                                            >
-                                                <LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard
-                                            </Link>
-                                            <button
-                                                onClick={handleLogout}
-                                                className="w-full text-left flex items-center px-4 py-3 text-sm text-red-600 hover:bg-red-50 font-semibold border-t border-emerald-100"
-                                            >
-                                                <LogOut className="h-4 w-4 mr-2" /> Logout
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ) : (
-                            <Link
-                                href="/login"
-                                className="hidden md:block group relative px-6 py-2.5 bg-emerald-600 text-white rounded-xl font-extrabold shadow-lg shadow-emerald-400/40 hover:shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300 border-2 border-emerald-500"
+                            <button
+                                onClick={handleLogout}
+                                className="hidden md:flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-xl font-extrabold shadow-lg hover:bg-red-700 transition-all duration-300 border-2 border-red-500"
                             >
-                                <span className="relative z-10 flex items-center space-x-2">
-                                    <span>Get Started</span>
-                                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                                </span>
-                            </Link>
+                                <LogOut className="h-5 w-5 mr-1" />
+                                <span>Logout</span>
+                            </button>
+                        ) : (
+                            <div className="hidden md:flex items-center space-x-2 px-4 py-2 bg-emerald-100 text-emerald-700 rounded-xl font-bold border-2 border-emerald-300">
+                                <User className="h-5 w-5 mr-1" />
+                                <span>Guest User</span>
+                            </div>
                         )}
 
                         {/* Mobile Menu Button */}

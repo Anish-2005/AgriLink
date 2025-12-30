@@ -1,7 +1,7 @@
 "use server";
 
 import { MongoClient } from "mongodb";
-import { mongoClientCS } from "../../lib/mongodbconnector";
+import { getMongoClient } from "../../lib/mongodbconnector";
 import { createClient } from "@supabase/supabase-js";
 import { v4 as uuidv4 } from "uuid";
 import { ObjectId } from 'mongodb';
@@ -16,8 +16,19 @@ let db;
 
 async function initDB() {
   if (!client) {
-    client = mongoClientCS;
-    await client.connect();
+    try {
+      client = getMongoClient();
+      await client.connect();
+    } catch (connErr) {
+      console.error('MongoDB connection error:', connErr);
+      // Provide a helpful message for DNS SRV failures
+      if (connErr.message && connErr.message.includes('ENOTFOUND')) {
+        throw new Error(
+          `Failed to resolve MongoDB host (DNS issue). Check your MONGO_CS connection string and network/DNS. Original: ${connErr.message}`
+        );
+      }
+      throw connErr;
+    }
   }
   if (!db) {
     db = client.db("agrilink");

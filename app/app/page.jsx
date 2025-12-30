@@ -9,6 +9,8 @@ import Image from 'next/image';
 import { ArrowRight, Camera, Leaf, TrendingUp, Users, Shield, Zap, Star, CheckCircle } from 'lucide-react';
 import * as THREE from 'three';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+
 
 export default function AppPage() {
   const { user } = useUser();
@@ -103,6 +105,74 @@ export default function AppPage() {
   };
 
   const analyzeWaste = async (data) => {
+    // Build the same prompt used by the server so client and server behave consistently
+    const { image, description, analysisType, cropType, wasteDescription, quantity, moistureLevel, age } = data || {};
+    const prompt = `
+    You are an expert agricultural waste classification assistant. 
+    Analyze the provided waste information and return complete data in the specified JSON format.
+
+    For image analysis, examine the visual characteristics.
+    For text analysis, use the provided description.
+
+    Required Output Format:
+    {
+      "cropType": "string (Rice/Wheat/Sugarcane)",
+      "wasteType": "string (stubble/straw/stalk/bagasse/bran)",
+      "wasteDescription": "string (detailed description)",
+      "quantity": "number",
+      "quantityUnit": "string (kg/ton)",
+      "moistureLevel": "string (Low/Medium/High)",
+      "ageOfWaste": "string (Fresh/1-2 weeks/2-4 weeks/1-2 months/2+ months)",
+      "qualityAssessment": {
+        "condition": "string",
+        "contamination": "string (Present/Not present)"
+      },
+      "suggestedUses": ["array", "of", "suggestions"],
+      "estimatedValue": "number (INR per ton)",
+      "confidence": "number (0-1)",
+      "notes": "string (additional observations)"
+    }
+
+    ${analysisType === 'image' ? 
+      'Analyze this agricultural waste image:' : 
+      `Analyze this description:\nCrop Type: ${cropType || 'Not specified'}\nWaste Description: ${description}\nQuantity: ${quantity || 'Not specified'}\nMoisture Level: ${moistureLevel || 'Not specified'}\nAge of Waste: ${age || 'Not specified'}`
+    }
+
+    Provide complete output in exact specified JSON format.
+    `;
+
+    // If Puter.js is loaded on the client, prefer calling it directly (no server key needed)
+    try {
+      if (typeof window !== 'undefined' && window.puter && window.puter.ai && typeof window.puter.ai.chat === 'function') {
+        // If image is provided, Puter supports (prompt, imageUrl) style; we pass base64 if available
+        let puterResp;
+        if (analysisType === 'image' && image) {
+          puterResp = await window.puter.ai.chat(prompt, image, { model: 'gemini-3-pro-preview' });
+        } else {
+          puterResp = await window.puter.ai.chat(prompt, { model: 'gemini-3-pro-preview' });
+        }
+
+        // Extract text from various possible fields
+        const text = puterResp?.output_text || puterResp?.response || puterResp?.text || puterResp?.choices?.[0]?.message?.content || puterResp?.choices?.[0]?.text || (typeof puterResp === 'string' ? puterResp : JSON.stringify(puterResp));
+
+        // Attempt to parse JSON from the response text
+        const jsonStart = text.indexOf('{');
+        const jsonEnd = text.lastIndexOf('}') + 1;
+        const jsonString = text.slice(jsonStart, jsonEnd).trim();
+        try {
+          const dataObj = JSON.parse(jsonString);
+          return dataObj;
+        } catch (parseErr) {
+          console.error('Failed to parse Puter client response:', parseErr, 'raw:', text);
+          throw new Error('Puter client parse error - ' + (parseErr.message || parseErr.toString()));
+        }
+      }
+    } catch (clientErr) {
+      console.warn('Puter client call failed, falling back to server:', clientErr);
+      // continue to server fallback
+    }
+
+    // Fallback: call server endpoint which may proxy to Puter or another provider
     try {
       const response = await fetch('/api/gemini', {
         method: 'POST',
@@ -114,8 +184,20 @@ export default function AppPage() {
       const text = await response.text();
       if (!text) throw new Error('Empty response from server');
 
-      const result = JSON.parse(text);
-      if (!response.ok) throw new Error(result.error || 'Failed to analyze waste');
+      let result = null;
+      try {
+        result = JSON.parse(text);
+      } catch (parseErr) {
+        // keep result null and include raw text in error below
+      }
+
+      if (!response.ok) {
+        const serverErr = result?.error || 'Puter API error';
+        const details = result?.details || result?.rawResponse || text;
+        console.error('Puter API error details:', details);
+        throw new Error(`${serverErr}${details ? ' - ' + (typeof details === 'string' ? details : JSON.stringify(details)) : ''}`);
+      }
+
       return result;
     } catch (error) {
       console.error('Error analyzing waste:', error);
@@ -832,24 +914,7 @@ export default function AppPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white border-t-4 border-emerald-500 text-emerald-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center">
-            <div className="flex items-center justify-center space-x-3 mb-4">
-              <div className="bg-emerald-500 p-2 rounded-xl">
-                <Leaf className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-2xl font-extrabold text-emerald-800">AgriLink</span>
-            </div>
-            <p className="text-emerald-700 font-semibold max-w-md mx-auto mb-6">
-              Transforming agricultural waste into valuable resources through AI-powered marketplace.
-            </p>
-            <p className="text-sm text-emerald-600 font-bold">
-              © 2025 AgriLink. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       {/* Scroll to top button */}
       <button

@@ -1,11 +1,7 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export async function POST(request) {
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
   try {
     const { image, description, analysisType, cropType, wasteDescription, quantity, moistureLevel, age } = await request.json();
-    
     // Validate input
     if (!analysisType || (!image && !description)) {
       return Response.json({
@@ -14,10 +10,6 @@ export async function POST(request) {
       }, { status: 400 });
     }
 
-    const model = genAI.getGenerativeModel({ 
-      model: 'gemini-1.5-flash',
-      generationConfig: { temperature: 0.7, topP: 0.9 }
-    });
 
     const prompt = `
     You are an expert agricultural waste classification assistant. 
@@ -47,20 +39,48 @@ export async function POST(request) {
 
     ${analysisType === 'image' ? 
       'Analyze this agricultural waste image:' : 
-      `Analyze this description:
-      Crop Type: ${cropType || 'Not specified'}
-      Waste Description: ${description}
-      Quantity: ${quantity || 'Not specified'}
-      Moisture Level: ${moistureLevel || 'Not specified'}
-      Age of Waste: ${age || 'Not specified'}`
+      `Analyze this description:\nCrop Type: ${cropType || 'Not specified'}\nWaste Description: ${description}\nQuantity: ${quantity || 'Not specified'}\nMoisture Level: ${moistureLevel || 'Not specified'}\nAge of Waste: ${age || 'Not specified'}`
     }
 
     Provide complete output in exact specified JSON format.
     `;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    // Prepare headers (include API key only when present)
+    const headers = { 'Content-Type': 'application/json' };
+    if (process.env.PUTER_API_KEY) headers['X-API-Key'] = process.env.PUTER_API_KEY;
+
+    // Use Puter API for Gemini (messages-style payload). If that fails, retry with simple {prompt} payload.
+    let puterRes = await fetch('https://api.puter.com/v2/ai/chat', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        model: 'gemini-3-pro-preview',
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    // If unauthorized or not OK, attempt fallback payload shape
+    if (!puterRes.ok) {
+      const errText = await puterRes.text().catch(() => '');
+      console.warn('Initial Puter call failed:', puterRes.status, errText);
+      // Fallback: try { prompt, model }
+      puterRes = await fetch('https://api.puter.com/v2/ai/chat', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ prompt, model: 'gemini-3-pro-preview' })
+      });
+    }
+
+    if (!puterRes.ok) {
+      const errText = await puterRes.text().catch(() => '');
+      console.error('Puter API returned non-OK after fallback:', puterRes.status, errText);
+      return Response.json({ error: 'Puter API error', status: puterRes.status, details: errText }, { status: 500 });
+    }
+
+    const puterData = await puterRes.json();
+
+    // Try multiple places where Puter might return text
+    const text = puterData.output_text || puterData.response || puterData.text || puterData.choices?.[0]?.message?.content || puterData.choices?.[0]?.text || puterData.result || (typeof puterData === 'string' ? puterData : JSON.stringify(puterData));
 
     // Extract JSON from response
     const jsonStart = text.indexOf('{');
@@ -69,26 +89,23 @@ export async function POST(request) {
 
     try {
       const data = JSON.parse(jsonString);
-      
       // Validate required fields
       if (!data.cropType || !data.wasteType) {
         throw new Error('Incomplete response from AI');
       }
-
       return Response.json(data);
     } catch (parseError) {
-      console.error('Failed to parse Gemini response:', parseError, 'Raw response:', text);
       return Response.json({
         error: 'Failed to parse AI response',
+        parseError: parseError.message,
         rawResponse: text
       }, { status: 500 });
     }
-
   } catch (error) {
-    console.error('Gemini API error:', error);
     return Response.json({
       error: 'Failed to process request',
-      details: error.message 
+      details: error.message,
+      stack: error.stack
     }, { status: 500 });
   }
 }
