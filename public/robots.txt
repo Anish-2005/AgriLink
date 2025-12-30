@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Sitemap: https://your-domain.com/sitemap.xml
+# Replace https://your-domain.com with your production domain
+# Add Disallow rules for any private routes if required
