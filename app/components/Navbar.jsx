@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { useUser } from '@civic/auth/react';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { Star, Menu, X, ArrowRight, Leaf, Zap, Users, TrendingUp, CheckCircle, Camera, Wallet, BarChart2, Leaf as LucideLeaf, User, LogOut, LayoutDashboard } from 'lucide-react';
+import { Star, Menu, X, ArrowRight, Zap, Users, TrendingUp, CheckCircle, Camera, Wallet, BarChart2, Leaf as LucideLeaf, User, LogOut, LayoutDashboard } from 'lucide-react';
+import Logo from './Logo';
 
 export default function Navbar() {
     const { user } = useUser();
@@ -73,16 +74,8 @@ export default function Navbar() {
                 <div className="flex justify-between items-center h-20">
                     {/* Logo */}
                     <div className="flex items-center space-x-3">
-                        <Link href="/" className="flex items-center space-x-3">
-                            <div className="relative">
-                                <div className="absolute inset-0 bg-gradient-to-r from-lime-400 to-emerald-400 rounded-xl blur opacity-75"></div>
-                                <div className="relative bg-gradient-to-r from-lime-400 to-emerald-400 p-2 rounded-xl">
-                                    <Leaf className="h-6 w-6 text-white" />
-                                </div>
-                            </div>
-                            <span className="text-3xl font-extrabold text-emerald-700 tracking-tight drop-shadow-lg">
-                                AgriLink
-                            </span>
+                        <Link href="/" className="flex items-center">
+                            <Logo size={44} showText={true} />
                         </Link>
                     </div>
 

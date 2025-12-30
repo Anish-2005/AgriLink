@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Leaf } from 'lucide-react';
+import Logo from '../../components/Logo';
 
 export default function LoginNav({ isScrolled }) {
   return (
@@ -9,16 +10,8 @@ export default function LoginNav({ isScrolled }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center space-x-3">
-            <Link href="/" className="flex items-center space-x-3">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-lime-400 to-emerald-400 rounded-xl blur opacity-75"></div>
-                <div className="relative bg-gradient-to-r from-lime-400 to-emerald-400 p-2 rounded-xl">
-                  <Leaf className="h-6 w-6 text-white" />
-                </div>
-              </div>
-              <span className="text-3xl font-extrabold text-emerald-700 tracking-tight drop-shadow-lg border-b-4 border-emerald-500 pb-1">
-                AgriLink
-              </span>
+            <Link href="/" className="flex items-center">
+              <Logo size={44} showText={true} />
             </Link>
           </div>
 

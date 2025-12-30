@@ -1,4 +1,5 @@
 import { Leaf } from 'lucide-react';
+import Logo from './Logo';
 
 export default function Footer() {
   return (
@@ -7,10 +8,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-emerald-500 p-2 rounded-xl">
-                <Leaf className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-2xl font-extrabold text-emerald-800">AgriLink</span>
+              <Logo size={36} showText={true} />
             </div>
             <p className="text-emerald-700 leading-relaxed max-w-md font-semibold">
               Connecting farmers with industries to create sustainable value from agricultural waste.
